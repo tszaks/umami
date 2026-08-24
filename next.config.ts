@@ -7,6 +7,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const TRACKER_SCRIPT = '/script.js';
 const RECORDER_SCRIPT = '/recorder.js';
+const INSTRUMENTATION_SCRIPT = '/instrumentation.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 const isVercel = Boolean(process.env.VERCEL);
@@ -111,6 +112,10 @@ if (isProd) {
   });
   headers.push({
     source: RECORDER_SCRIPT,
+    headers: trackerHeaders,
+  });
+  headers.push({
+    source: INSTRUMENTATION_SCRIPT,
     headers: trackerHeaders,
   });
 }
