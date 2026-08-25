@@ -5,6 +5,9 @@
   var mode = (loader && loader.dataset.posthogMode) || 'public';
   var site = (loader && loader.dataset.posthogSite) || location.hostname;
   var domain = location.hostname.toLowerCase();
+  var websiteId = (loader && loader.dataset.posthogWebsiteId) || '';
+  var websiteIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (!websiteIdPattern.test(websiteId)) websiteId = '';
   var projectToken = 'phc_sP3NWLrzhFvhWnzdgtJZi2gmAhUnHQp5LNthvXWyGBZ8';
   var scriptOrigin = 'https://pulse.szakacsmedia.com';
   var privateMode = mode !== 'public';
@@ -85,6 +88,7 @@
     event.properties.site = site;
     event.properties.pulse_domain = domain;
     event.properties.pulse_mode = mode;
+    if (websiteId) event.properties.pulse_website_id = websiteId;
     return event;
   }
 
@@ -187,5 +191,7 @@
     },
     before_send: sanitizeEvent,
   });
-  window.posthog.register({ site: site, pulse_domain: domain, pulse_mode: mode });
+  var sharedProperties = { site: site, pulse_domain: domain, pulse_mode: mode };
+  if (websiteId) sharedProperties.pulse_website_id = websiteId;
+  window.posthog.register(sharedProperties);
 })();
