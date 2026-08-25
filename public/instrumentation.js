@@ -4,6 +4,10 @@
   var script = document.currentScript;
   var mode = (script && script.dataset.pulseMode) || 'public';
   var site = (script && script.dataset.pulseSite) || location.hostname;
+  var trackerScript = document.querySelector('script[data-website-id][src*="/script.js"]');
+  var websiteId =
+    (trackerScript && trackerScript.dataset.websiteId) ||
+    (script && script.dataset.pulseWebsiteId) || '';
   var pending = [];
   var pendingIdentify = [];
   var pageState;
@@ -27,6 +31,7 @@
     posthogScript.dataset.pulsePosthog = 'true';
     posthogScript.dataset.posthogSite = site;
     posthogScript.dataset.posthogMode = mode;
+    if (websiteId) posthogScript.dataset.posthogWebsiteId = websiteId;
     if (script && script.nonce) posthogScript.nonce = script.nonce;
     (document.head || document.documentElement).appendChild(posthogScript);
   }
