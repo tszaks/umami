@@ -245,6 +245,7 @@ if (isProd && cloudMode) {
 /** @type {import('next').NextConfig} */
 export default withNextIntl({
   reactStrictMode: false,
+  skipTrailingSlashRedirect: true,
   env: {
     apiUrl,
     basePath,
