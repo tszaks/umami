@@ -90,6 +90,7 @@ export const FILTER_COLUMNS = {
   region: 'region',
   city: 'city',
   language: 'language',
+  screen: 'screen',
   event: 'event_name',
   tag: 'tag',
   eventType: 'event_type',
