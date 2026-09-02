@@ -4,12 +4,39 @@
   var script = document.currentScript;
   var mode = (script && script.dataset.pulseMode) || 'public';
   var site = (script && script.dataset.pulseSite) || location.hostname;
+  var trackerScript = document.querySelector('script[data-website-id][src*="/script.js"]');
+  var websiteId =
+    (trackerScript && trackerScript.dataset.websiteId) ||
+    (script && script.dataset.pulseWebsiteId) || '';
   var pending = [];
   var pendingIdentify = [];
   var pageState;
   var flushTimer;
   var downloadPattern = /\.(?:7z|avi|csv|docx?|dmg|epub|exe|gz|ics|iso|jpeg|jpg|m4a|mov|mp3|mp4|msi|pdf|pkg|png|pptx?|rar|rtf|svg|tar|tgz|txt|wav|webm|webp|xlsx?|xml|zip)$/i;
   var idPattern = /^(?:\d{4,}|[a-f\d]{8,}|[0-9a-f]{8}-[0-9a-f-]{27,})$/i;
+
+  function loadPostHog() {
+    if (window.posthog || document.querySelector('script[data-pulse-posthog]')) return;
+
+    var origin = 'https://pulse.szakacsmedia.com';
+    try {
+      if (script && script.src) origin = new URL(script.src).origin;
+    } catch (_) {
+      // Use the canonical Pulse origin.
+    }
+
+    var posthogScript = document.createElement('script');
+    posthogScript.async = true;
+    posthogScript.src = origin + '/posthog.js';
+    posthogScript.dataset.pulsePosthog = 'true';
+    posthogScript.dataset.posthogSite = site;
+    posthogScript.dataset.posthogMode = mode;
+    if (websiteId) posthogScript.dataset.posthogWebsiteId = websiteId;
+    if (script && script.nonce) posthogScript.nonce = script.nonce;
+    (document.head || document.documentElement).appendChild(posthogScript);
+  }
+
+  loadPostHog();
 
   function cleanValue(value, limit) {
     if (!value) return undefined;

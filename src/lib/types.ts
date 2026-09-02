@@ -152,6 +152,7 @@ export interface FilterParams {
   region?: string;
   city?: string;
   language?: string;
+  screen?: string;
   event?: string;
   search?: string;
   tag?: string;
