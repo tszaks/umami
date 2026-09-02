@@ -57,6 +57,7 @@ export const filterParams = {
   hostname: z.string().optional(),
   distinctId: z.string().optional(),
   language: z.string().optional(),
+  screen: z.string().optional(),
   event: z.string().optional(),
   utmSource: z.string().optional(),
   utmMedium: z.string().optional(),

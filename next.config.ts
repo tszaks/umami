@@ -8,6 +8,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const TRACKER_SCRIPT = '/script.js';
 const RECORDER_SCRIPT = '/recorder.js';
 const INSTRUMENTATION_SCRIPT = '/instrumentation.js';
+const POSTHOG_SCRIPT = '/posthog.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 const isVercel = Boolean(process.env.VERCEL);
@@ -118,9 +119,32 @@ if (isProd) {
     source: INSTRUMENTATION_SCRIPT,
     headers: trackerHeaders,
   });
+  headers.push({
+    source: POSTHOG_SCRIPT,
+    headers: trackerHeaders,
+  });
+  headers.push({
+    source: '/ph/static/:path*',
+    headers: trackerHeaders,
+  });
+  headers.push({
+    source: '/ph/:path*',
+    headers: apiHeaders,
+  });
 }
 
 const rewrites = [];
+
+if (isProd) {
+  rewrites.push({
+    source: '/ph/static/:path*',
+    destination: 'https://us-assets.i.posthog.com/static/:path*',
+  });
+  rewrites.push({
+    source: '/ph/:path*',
+    destination: 'https://us.i.posthog.com/:path*',
+  });
+}
 
 if (trackerScriptURL) {
   rewrites.push({
@@ -221,6 +245,7 @@ if (isProd && cloudMode) {
 /** @type {import('next').NextConfig} */
 export default withNextIntl({
   reactStrictMode: false,
+  skipTrailingSlashRedirect: true,
   env: {
     apiUrl,
     basePath,
