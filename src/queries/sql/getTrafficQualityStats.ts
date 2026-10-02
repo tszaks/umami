@@ -29,6 +29,8 @@ const POSTGRES_VISITS = `
       max(case when
         coalesce(website_event.hostname, '') ~* '(^localhost$|^127\\.0\\.0\\.1$|\\.vercel\\.app$)'
         or coalesce(website_event.utm_source, '') ~* '(^|[-_])(qa|test|selftest)([-_]|$)'
+        or lower(coalesce(website_event.utm_source, '')) = 'codex_monthly_audit'
+        or coalesce(website_event.utm_medium, '') ~* '^(qa|test|selftest|self-test)$'
         or coalesce(website_event.utm_campaign, '') ~* '(^|[-_])(qa|test|selftest)([-_]|$)'
         or coalesce(website_event.utm_content, '') ~* '(^|[-_])(qa|test|selftest)([-_]|$)'
         or coalesce(website_event.url_path, '') ~* '^/(qa|test|self-test)(/|$)'
@@ -77,6 +79,8 @@ const CLICKHOUSE_VISITS = `
       max(
         match(lower(ifNull(hostname, '')), '(^localhost$|^127\\.0\\.0\\.1$|\\.vercel\\.app$)')
         or match(lower(ifNull(utm_source, '')), '(^|[-_])(qa|test|selftest)([-_]|$)')
+        or lower(ifNull(utm_source, '')) = 'codex_monthly_audit'
+        or match(lower(ifNull(utm_medium, '')), '^(qa|test|selftest|self-test)$')
         or match(lower(ifNull(utm_campaign, '')), '(^|[-_])(qa|test|selftest)([-_]|$)')
         or match(lower(ifNull(utm_content, '')), '(^|[-_])(qa|test|selftest)([-_]|$)')
         or match(lower(ifNull(url_path, '')), '^/(qa|test|self-test)(/|$)')
