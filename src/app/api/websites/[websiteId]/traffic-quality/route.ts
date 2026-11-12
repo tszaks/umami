@@ -44,7 +44,7 @@ export async function GET(
   return json({
     ...data,
     definitions: {
-      qa: 'Localhost, loopback, Vercel preview hosts, explicit QA/test campaigns, QA routes, and self-test events.',
+      qa: 'Localhost, loopback, Vercel preview hosts, explicit QA/test source, medium or campaign, codex_monthly_audit, QA routes, and self-test events. Raw totals remain available.',
       suspected:
         'Visits matching at least one review signal: China, a Chinese browser language, 800x600 screen, or Boardman data-center location.',
     },

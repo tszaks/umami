@@ -37,6 +37,8 @@ describe('getTrafficQualityStats', () => {
     expect(sql).toContain("when is_qa = 1 then 'qa'");
     expect(sql).toContain("lower(coalesce(session.city, '')) = 'boardman'");
     expect(sql).toContain("lower(coalesce(session.screen, '')) = '800x600'");
+    expect(sql).toContain("lower(coalesce(website_event.utm_source, '')) = 'codex_monthly_audit'");
+    expect(sql).toContain("coalesce(website_event.utm_medium, '') ~* '^(qa|test|selftest|self-test)$'");
   });
 
   test('clickhouse uses the same QA and suspected signals', async () => {
@@ -50,5 +52,7 @@ describe('getTrafficQualityStats', () => {
     expect(sql).toContain("select 'qaClean' as scope");
     expect(sql).toContain("lower(ifNull(screen, '')) = '800x600'");
     expect(sql).toContain("lower(ifNull(city, '')) = 'boardman'");
+    expect(sql).toContain("lower(ifNull(utm_source, '')) = 'codex_monthly_audit'");
+    expect(sql).toContain("match(lower(ifNull(utm_medium, '')), '^(qa|test|selftest|self-test)$')");
   });
 });
